@@ -165,7 +165,7 @@
                             }
                         }
                     } else if (element.includes('DDD')) {
-                         element = element.replace('DDD', 'NNN')
+                        element = element.replace('DDD', 'NNN')
                     } else if (element.includes('DD')) {
 
                         indx = element.indexOf('DD');
@@ -246,7 +246,6 @@
                         }
 
 
-
                     } else if (element.includes('mm')) {
                         indx = element.indexOf('mm');
                         result.setMinutes(parseInt(date[form_position].substr(indx, 2)));
@@ -325,20 +324,21 @@
 
             } else if (replacement.includes('YY')) {
 
-                shortyear = date.getFullYear().toString().substr(-2);
+                var shortyear = date.getFullYear().toString().substr(-2);
                 result = result.replace('YY', shortyear);
                 replacement = replacement.replace('YY', '');
 
             } else if (replacement.includes('MMMM')) {
 
-                fullmonth = long_months[date.getMonth()];
+                var fullmonth = long_months[date.getMonth()];
                 result = result.replace('MMMM', fullmonth);
                 replacement = replacement.replace('MMMM', '');
 
             } else if (replacement.includes('MMM')) {
 
-                shortmonth = short_months[date.getMonth()];
-                replacement = replacement.replace('MMM', shortmonth);
+                var shortmonth = short_months[date.getMonth()];
+                result = result.replace('MMM', shortmonth)
+                replacement = replacement.replace('MMM', '');
 
             } else if (replacement.includes('MM')) {
 
@@ -456,7 +456,6 @@
                 }
 
 
-
             } else if (replacement.includes('s')) {
                 result = result.replace('s', date.getSeconds());
                 replacement = replacement.replace('s', '');
@@ -487,6 +486,6 @@
         config: config
 
     }
-    parse(["Friday"], ['DDDD'])
+
 })(global);
 

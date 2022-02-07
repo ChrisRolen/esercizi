@@ -29,14 +29,15 @@ describe('Date', function () {
         })
 
         it('returns a full month written in letters if MMMM is requested', function () {
-            months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            m = lib.format(new Date(2021, 11, 4), 'MMMM')
-            assert.oneOf(m, months)
+            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+            var m = lib.format(new Date(2021, 11, 4), 'MMMM');
+            assert.oneOf(m, months);
         });
 
         it('returns a short month written in letters if MMM is requested', function () {
-
-
+            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            var mm = lib.format(new Date(2021, 11, 4), 'MMM')
+            assert.oneOf(mm, months);
         });
 
         it('returns a month in two digits if MM is requested', function () {
@@ -50,13 +51,13 @@ describe('Date', function () {
 
         it('returns a full day of the week in letters if DDDD is requested', function () {
             var long_days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-            dddd = lib.format(new Date(2021, 11, 4), 'DDDD')
+            var dddd = lib.format(new Date(2021, 11, 4), 'DDDD')
             assert.oneOf(dddd, long_days)
         });
 
         it('returns a short day of the week in letters if DDD is requested', function () {
             var short_days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-            ddd = lib.format(new Date(2021, 11, 4), 'DDD')
+            var ddd = lib.format(new Date(2021, 11, 4), 'DDD')
             assert.oneOf(ddd, short_days)
         });
         it('returns a two digit day if DD is requested', function () {
@@ -98,9 +99,6 @@ describe('Date', function () {
         it('returns the milliseconds if sss is requested', function () {
             assert.isAtLeast(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'sss').length, 1)
         });
-        it('returns', function () {
-
-        });
 
     });
     describe('#parse', function () {
@@ -109,7 +107,7 @@ describe('Date', function () {
         });
 
         it('sets an Array of Dates with a four digit year when YYYY is given', function () {
-            res = lib.parse(["21/8/28", "21/8/28"], ['YY/M/DD', 'YY/M/DD'])
+            var res = lib.parse(["21/8/28", "21/8/28"], ['YY/M/DD', 'YY/M/DD'])
             assert.isAtLeast(res[0].getFullYear().toString().length, 4)
         });
 
@@ -134,11 +132,11 @@ describe('Date', function () {
             assert.isBelow(lib.parse(["21/11/28"], ['YY/M/DD'])[0].getMonth(), 13)
         });
 
-        it('skips the command if DDDD is passed', function (){
+        it('skips the command if DDDD is passed', function () {
             lib.parse(["Friday"], ['DDDD'])
         });
 
-        it('skips the command if DDD is passed', function (){
+        it('skips the command if DDD is passed', function () {
             lib.parse(["Fri"], ['DDD'])
         });
 
@@ -192,10 +190,10 @@ describe('Date', function () {
         it('sets an Object with a Label for the language given', function () {
             lib.config('language', {
                 'it': {
-                    short_months: [ 'Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
-                    long_months: [ 'Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
-                    short_days: [ 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'],
-                    long_days: [ 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica']
+                    short_months: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
+                    long_months: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
+                    short_days: ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'],
+                    long_days: ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica']
                 }
             });
         });
