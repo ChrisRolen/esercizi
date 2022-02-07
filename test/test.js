@@ -134,6 +134,14 @@ describe('Date', function () {
             assert.isBelow(lib.parse(["21/11/28"], ['YY/M/DD'])[0].getMonth(), 13)
         });
 
+        it('skips the command if DDDD is passed', function (){
+            lib.parse(["Friday"], ['DDDD'])
+        });
+
+        it('skips the command if DDD is passed', function (){
+            lib.parse(["Fri"], ['DDD'])
+        });
+
         it('sets an Array of Dates with a day from two digits when DD is given', function () {
             assert.isBelow(lib.parse(["21/01/08"], ['YY/MM/DD'])[0].getDate(), 32)
         });

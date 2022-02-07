@@ -159,12 +159,13 @@
 
                     } else if (element.includes('DDDD')) {
                         for (let i = 0; i < long_days.length; i++) {
-                            if (element.includes(long_days[i])) {
-                                //
+                            if (date[form_position].includes(long_days[i])) {
+                                var sub = "N".repeat(long_days[i].length)
+                                element = element.replace('DDDD', sub)
                             }
                         }
                     } else if (element.includes('DDD')) {
-                        //
+                         element = element.replace('DDD', 'NNN')
                     } else if (element.includes('DD')) {
 
                         indx = element.indexOf('DD');
@@ -486,6 +487,6 @@
         config: config
 
     }
-
+    parse(["Friday"], ['DDDD'])
 })(global);
 
