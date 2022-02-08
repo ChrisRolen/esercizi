@@ -20,12 +20,12 @@ describe('Date', function () {
 
         it('returns a full year (4 chars) if YYYY is requested', function () {
 
-            assert.isAtLeast(lib.format(new Date(2021, 11, 4), 'YYYY').length, 4)
+            assert.isAtLeast(lib.format(new Date(999, 15, 4), 'YYYY').length, 4)
         });
 
         it('returns a short year (2 chars) if YY is requested', function () {
 
-            assert.isAtLeast(lib.format(new Date(2021, 11, 4), 'YY').length, 2)
+            assert.isAtLeast(lib.format(new Date(9, 11, 4), 'YY').length, 2)
         })
 
         it('returns a full month written in letters if MMMM is requested', function () {
@@ -61,10 +61,10 @@ describe('Date', function () {
             assert.oneOf(ddd, short_days)
         });
         it('returns a two digit day if DD is requested', function () {
-            assert.isAtLeast(lib.format(new Date(2021, 11, 4), 'DD').length, 2)
+            assert.isAtLeast(lib.format(new Date(2021, 11, 1), 'DD').length, 2)
         });
         it('returns a one digit day if D is requested', function () {
-            assert.isBelow(parseInt(lib.format(new Date(2021, 11, 4), 'D')), 31)
+            assert.isBelow(parseInt(lib.format(new Date(2021, 11, 9, 23, 59, 59), 'D')), 31)
         });
         it('returns a blank space if T is requested ', function () {
             assert.equal(lib.format(new Date(2021, 11, 4), 'T'), " ")
@@ -85,7 +85,7 @@ describe('Date', function () {
             assert.isAtLeast(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'hh').length, 3)
         });
         it('return two digits minutes if mm is requested', function () {
-            assert.isAtLeast(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'mm').length, 2)
+            assert.isAtLeast(lib.format(new Date(2021, 11, 4, 23, 1, 1, 60), 'mm').length, 2)
         });
         it('returns the minutes if m is requested', function () {
             assert.isAtLeast(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'm').length, 1)
@@ -103,7 +103,7 @@ describe('Date', function () {
     });
     describe('#parse', function () {
         it('returns an Array of Dates given an Array of Strings and the Format in which it is written', function () {
-            lib.parse(["21/8/28", "21/8/28"], ['YY/M/DD', 'YY/M/DD'])
+            assert.isArray(lib.parse(["21/8/28", "21/8/28"], ['YY/M/DD', 'YY/M/DD']))
         });
 
         it('sets an Array of Dates with a four digit year when YYYY is given', function () {
@@ -133,15 +133,15 @@ describe('Date', function () {
         });
 
         it('skips the command if DDDD is passed', function () {
-            lib.parse(["Friday"], ['DDDD'])
+            assert.isDefined(lib.parse(["Friday"], ['DDDD']))
         });
 
         it('skips the command if DDD is passed', function () {
-            lib.parse(["Fri"], ['DDD'])
+            assert.isDefined(lib.parse(["Fri"], ['DDD']))
         });
 
         it('sets an Array of Dates with a day from two digits when DD is given', function () {
-            assert.isBelow(lib.parse(["21/01/08"], ['YY/MM/DD'])[0].getDate(), 32)
+            assert.isBelow(lib.parse(["1/01/08"], ['YY/MM/DD'])[0].getDate(), 32)
         });
 
         it('sets an Array of Dates with a day when D is given', function () {
@@ -188,14 +188,14 @@ describe('Date', function () {
 
     describe('#config', function () {
         it('sets an Object with a Label for the language given', function () {
-            lib.config('language', {
+            assert.isUndefined(lib.config('language', {
                 'it': {
                     short_months: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
                     long_months: ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'],
                     short_days: ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'],
                     long_days: ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica']
                 }
-            });
+            }));
         });
         it('should get an error if an incomplete array of object is given', function () {
             assert.throws(() => lib.config('language', {'it': {}}), 'Variable Value does not contain all the required values.');
