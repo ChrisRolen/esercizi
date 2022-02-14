@@ -20,12 +20,12 @@ describe('Date', function () {
 
         it('returns a full year (4 chars) if YYYY is requested', function () {
 
-            assert.isAtLeast(lib.format(new Date(999, 15, 4), 'YYYY').length, 4)
+            assert.equal(lib.format(new Date(999, 15, 4), 'YYYY'), '1000')
         });
 
         it('returns a short year (2 chars) if YY is requested', function () {
 
-            assert.isAtLeast(lib.format(new Date(9, 11, 4), 'YY').length, 2)
+            assert.equal(lib.format(new Date(9, 11, 4), 'YY'), '09')
         })
 
         it('returns a full month written in letters if MMMM is requested', function () {
@@ -42,7 +42,7 @@ describe('Date', function () {
 
         it('returns a month in two digits if MM is requested', function () {
 
-            assert.isAtLeast(lib.format(new Date(2021, 11, 4), 'MM').length, 2)
+            assert.equal(lib.format(new Date(2021, 1, 4), 'MM'), '01')
         });
         it('returns a month if M is requested', function () {
 
@@ -61,7 +61,7 @@ describe('Date', function () {
             assert.oneOf(ddd, short_days)
         });
         it('returns a two digit day if DD is requested', function () {
-            assert.isAtLeast(lib.format(new Date(2021, 11, 1), 'DD').length, 2)
+            assert.equal(lib.format(new Date(2021, 11, 1), 'DD'), '01')
         });
         it('returns a one digit day if D is requested', function () {
             assert.isBelow(parseInt(lib.format(new Date(2021, 11, 9, 23, 59, 59), 'D')), 31)
@@ -74,30 +74,30 @@ describe('Date', function () {
         });
         it('returns the hours in two digits and 0-24 format if H is requested', function () {
             assert.isBelow(parseInt(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'H')), 25)
-            assert.isAtLeast(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'H').length, 2)
+            assert.equal(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'H'), '23')
         });
         it('returns the hours in two digits and 0-12 am/pm if hh is requested', function () {
             assert.isBelow(parseInt(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'hh')), 13)
-            assert.isAtLeast(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'hh').length, 4)
+            assert.equal(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'hh'), '11pm')
         });
         it('returns the hours in 0-12 a/pm format if h is requested', function () {
             assert.isBelow(parseInt(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'hh')), 13)
-            assert.isAtLeast(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'hh').length, 3)
+            assert.equal(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'hh'), '11pm')
         });
         it('return two digits minutes if mm is requested', function () {
-            assert.isAtLeast(lib.format(new Date(2021, 11, 4, 23, 1, 1, 60), 'mm').length, 2)
+            assert.equal(lib.format(new Date(2021, 11, 4, 23, 1, 1, 60), 'mm'), '01')
         });
         it('returns the minutes if m is requested', function () {
-            assert.isAtLeast(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'm').length, 1)
+            assert.equal(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'm'), '12')
         });
         it('returns two digits seconds if ss is requested', function () {
-            assert.isAtLeast(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'ss').length, 2)
+            assert.equal(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'ss'), '41')
         });
         it('returns the seconds if s is requested', function () {
-            assert.isAtLeast(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 's').length, 1)
+            assert.equal(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 's'), '41')
         });
         it('returns the milliseconds if sss is requested', function () {
-            assert.isAtLeast(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'sss').length, 1)
+            assert.equal(lib.format(new Date(2021, 11, 4, 23, 12, 41, 60), 'sss'), '60')
         });
 
     });
@@ -107,12 +107,11 @@ describe('Date', function () {
         });
 
         it('sets an Array of Dates with a four digit year when YYYY is given', function () {
-            var res = lib.parse(["21/8/28", "21/8/28"], ['YY/M/DD', 'YY/M/DD'])
-            assert.isAtLeast(res[0].getFullYear().toString().length, 4)
+            assert.equal(lib.parse(["21/8/28", "21/8/28"], ['YYYY/M/DD', 'YYYY/M/DD'])[0].getFullYear().toString(), '21')
         });
 
         it('sets an Array of Dates with an year with the "20" prefix when YY is given', function () {
-            assert.isAtLeast(lib.parse(["21/8/28", "21/8/28"], ['YY/M/DD', 'YY/M/DD'])[0].getFullYear().toString().length, 4)
+            assert.equal(lib.parse(["21/8/28", "21/8/28"], ['YY/M/DD', 'YY/M/DD'])[0].getFullYear().toString(), '2021')
             assert.isBelow(lib.parse(["21/8/28", "21/8/28"], ['YY/M/DD', "YY/M/DD"])[0].getFullYear(), 2100)
         });
 

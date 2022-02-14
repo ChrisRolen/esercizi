@@ -1,6 +1,6 @@
 (function (w) {
     var configuration = {
-        'en': {
+        'en-GB': {
             short_months: [undefined, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             long_months: [undefined, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
             short_days: [undefined, 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -69,12 +69,12 @@
 
     function format(date, format, options) {
         if (options == null) {
-            options = 'en';
+            options = 'en-GB';
         }
 
         if (date instanceof Date && typeof format == "string") {
-            var locale_date = new Date(date.toLocaleDateString(options));
-            var res = date_substitution(format, locale_date, options);
+
+            var res = date_substitution(format, date, options);
             return res;
 
         } else {
@@ -85,7 +85,7 @@
 
     function parse(date, date_format, options) {
         if (options == null) {
-            options = 'en';
+            options = 'en-GB';
         }
 
         if (date instanceof Array && date_format instanceof Array) {
@@ -116,7 +116,8 @@
                     } else if (element.includes('YYYY')) {
                         indx = element.indexOf('YYYY');
                         result.setFullYear(parseInt(date[form_position].substr(indx, 4)));
-                        element = element.replace('YYYY', 'NNNN');
+                        var sub = "N".repeat(result.getFullYear().toString().length)
+                        element = element.replace('YYYY', sub);
 
                     } else if (element.includes('YY')) {
 
@@ -444,6 +445,10 @@
                 result = result.replace('m', date.getMinutes());
                 replacement = replacement.replace('m', '');
 
+            } else if (replacement.includes('sss')) {
+                result = result.replace('sss', date.getMilliseconds());
+                replacement = replacement.replace('sss', '');
+
             } else if (replacement.includes('ss')) {
 
                 if (date.getSeconds() < 10) {
@@ -459,9 +464,6 @@
             } else if (replacement.includes('s')) {
                 result = result.replace('s', date.getSeconds());
                 replacement = replacement.replace('s', '');
-            } else if (replacement.includes('sss')) {
-                result = result.replace('sss', date.getMilliseconds());
-                replacement = replacement.replace('sss', '');
             } else if (replacement.includes('X')) {
                 result = result.replace('X', '1410715640.579');
                 replacement = replacement.replace('X', '');
@@ -486,6 +488,6 @@
         config: config
 
     }
-
+    console.log(parse(["21/8/28", "21/8/28"], ['YYYY/M/DD', 'YYYY/M/DD'])[0].getFullYear().toString())
 })(global);
 
