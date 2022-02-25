@@ -1,15 +1,15 @@
 (function (w) {
     var configuration = {
-        'en-GB': {
-            short_months: [undefined, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            long_months: [undefined, 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            short_days: [undefined, 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            long_days: [undefined, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-        }
-    }
-    var min = 0;
-    var twelveformat = '';
-    var hours = 0;
+            'en-GB': {
+                short_months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                long_months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                short_days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                long_days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+            }
+        },
+        min = 0,
+        twelveformat = '',
+        hours = 0;
 
     function config(parameter, Value) {
 
@@ -24,13 +24,11 @@
                     throw TypeError('Variable Value is not of the required format or is an empty object.');
                 }
 
-
                 if (!keys.includes('short_months') || !keys.includes('long_months')
                     || !keys.includes('short_days') || !keys.includes('long_days') || !(newconf['long_days'].length === 7)
                     || !(newconf['short_days'].length === 7) || !(newconf['long_months'].length === 12) || !(newconf['short_months'].length === 12)) {
                     throw TypeError('Variable Value does not contain all the required values.');
                 }
-
 
                 newconf['long_days'].forEach(e => {
                     if (!(typeof e === 'string')) {
@@ -61,11 +59,9 @@
                 newconf['long_months'].unshift(undefined);
 
                 configuration = {configuration, Value};
-
             }
         }
     }
-
 
     function format(date, format, options) {
         if (options == null) {
@@ -73,14 +69,11 @@
         }
 
         if (date instanceof Date && typeof format == "string") {
-
             var res = date_substitution(format, date, options);
             return res;
-
         } else {
             throw TypeError('Variable date or format are not of the required format.');
         }
-
     }
 
     function parse(date, date_format, options) {
@@ -98,6 +91,7 @@
             var indx = 0;
             var form_position = 0;
             var array_result = [];
+
             form.forEach(element => {
                 form_position = date_format.indexOf(element);
                 while (element.includes('YYYY') || element.includes('YY') || element.includes('MMMM')
@@ -108,12 +102,14 @@
                 || element.includes('m') || element.includes('ss') || element.includes('s')
                 || element.includes('sss') || element.includes('X') || element.includes('x')
                 || element.includes('T') || element.includes('Z')) {
+
                     if (element.match(/YYYY*MM*DDTHH*mm*ss/)) {
 
                         result = new Date(form);
                         element = '';
 
                     } else if (element.includes('YYYY')) {
+
                         indx = element.indexOf('YYYY');
                         result.setFullYear(parseInt(date[form_position].substr(indx, 4)));
                         var sub = "N".repeat(result.getFullYear().toString().length)
@@ -133,23 +129,26 @@
                             }
                         }
                         element = element.replace('MMMM', 'NNNN');
+
                     } else if (element.includes('MMM')) {
+
                         for (let i = 0; i < short_months.length; i++) {
                             if (date[form_position].includes(short_months[i])) {
                                 result.setMonth(i);
                             }
                         }
 
-                        element = element.replace('MMM', 'NNN')
+                        element = element.replace('MMM', 'NNN');
 
                     } else if (element.includes('MM')) {
+
                         indx = element.indexOf('MM');
                         result.setMonth(parseInt(date[form_position].substr(indx, 2)));
                         element = element.replace('MM', 'NN');
 
                     } else if (element.includes('M')) {
-                        indx = element.indexOf('M');
 
+                        indx = element.indexOf('M');
                         if (date[form_position].substr(indx + 1, 1).match(/[^0-9]/gm)) {
                             result.setMonth(parseInt(date[form_position].substr(indx, 1)));
                             element = element.replace('M', 'N');
@@ -159,14 +158,18 @@
                         }
 
                     } else if (element.includes('DDDD')) {
+
                         for (let i = 0; i < long_days.length; i++) {
                             if (date[form_position].includes(long_days[i])) {
-                                var sub = "N".repeat(long_days[i].length)
-                                element = element.replace('DDDD', sub)
+                                var sub = "N".repeat(long_days[i].length);
+                                element = element.replace('DDDD', sub);
                             }
                         }
+
                     } else if (element.includes('DDD')) {
-                        element = element.replace('DDD', 'NNN')
+
+                        element = element.replace('DDD', 'NNN');
+
                     } else if (element.includes('DD')) {
 
                         indx = element.indexOf('DD');
@@ -184,7 +187,6 @@
                             element = element.replace('D', 'NN');
                         }
 
-
                     } else if (element.includes('HH')) {
 
                         indx = element.indexOf('HH');
@@ -201,26 +203,23 @@
                             result.setHours(parseInt(date[form_position].substr(indx, 2)));
                             element = element.replace('H', 'NN');
                         }
+
                     } else if (element.includes('hh')) {
 
                         indx = element.indexOf('hh');
-
                         if (date[form_position].substr(indx, 4).includes('pm')) {
                             hours = parseInt(date[form_position].substr(indx, 2)) + 12;
                             result.setHours(hours);
                         } else if (date[form_position].substr(indx, 4).includes('am')) {
-
                             result.setHours(parseInt(date[form_position].substr(indx, 2)));
-
                         }
-
                         element = element.replace('hh', 'NNNN');
 
                     } else if (element.includes('h')) {
 
                         indx = element.indexOf('h');
-
                         if (date[form_position].substr(indx, 4).includes('pm')) {
+
                             if (date[form_position].substr(indx + 1, 1).match(/[^0-9]/gm)) {
                                 hours = parseInt(date[form_position].substr(indx, 1)) + 12;
                                 result.setHours(hours);
@@ -243,18 +242,17 @@
                                 element = element.replace('h', 'NNNN');
                             }
 
-
                         }
 
-
                     } else if (element.includes('mm')) {
+
                         indx = element.indexOf('mm');
                         result.setMinutes(parseInt(date[form_position].substr(indx, 2)));
                         element = element.replace('mm', 'NN');
 
                     } else if (element.includes('m')) {
-                        indx = element.indexOf('m');
 
+                        indx = element.indexOf('m');
                         if (date[form_position].substr(indx + 1, 1).match(/[^0-9]/gm)) {
                             result.setMinutes(parseInt(date[form_position].substr(indx, 1)));
                             element = element.replace('m', 'N');
@@ -263,8 +261,8 @@
                             element = element.replace('m', 'NN');
                         }
 
-
                     } else if (element.includes('s')) {
+
                         indx = element.indexOf('s');
                         if (element.substr(indx + 1, 1).includes('s')) {
                             if (element.substr(indx + 2, 1).includes('s')) {
@@ -284,11 +282,9 @@
                             }
                         }
 
-
                     } else if (element.includes('T')) {
                         element = element.replace('T', 'NNN');
                     }
-
 
                 }
                 array_result.push(result);
@@ -308,6 +304,8 @@
         var short_months = configuration[options].short_months;
         var long_days = configuration[options].long_days;
         var short_days = configuration[options].short_days;
+        var meridian = date.getHours() > 12 ? "pm" : "am";
+        var mod = date.getHours() % 12;
 
         while (replacement.includes('YYYY') || replacement.includes('YY') || replacement.includes('MMMM')
         || replacement.includes('MMM') || replacement.includes('MM') || replacement.includes('M')
@@ -325,20 +323,20 @@
 
             } else if (replacement.includes('YY')) {
 
-                var shortyear = date.getFullYear().toString().substr(-2);
-                result = result.replace('YY', shortyear);
+                var shortYear = date.getFullYear().toString().substr(-2);
+                result = result.replace('YY', shortYear);
                 replacement = replacement.replace('YY', '');
 
             } else if (replacement.includes('MMMM')) {
 
-                var fullmonth = long_months[date.getMonth()];
-                result = result.replace('MMMM', fullmonth);
+                var fullMonth = long_months[date.getMonth()];
+                result = result.replace('MMMM', fullMonth);
                 replacement = replacement.replace('MMMM', '');
 
             } else if (replacement.includes('MMM')) {
 
-                var shortmonth = short_months[date.getMonth()];
-                result = result.replace('MMM', shortmonth)
+                var shortMonth = short_months[date.getMonth()];
+                result = result.replace('MMM', shortMonth)
                 replacement = replacement.replace('MMM', '');
 
             } else if (replacement.includes('MM')) {
@@ -352,19 +350,20 @@
                 }
 
             } else if (replacement.includes('M')) {
+
                 result = result.replace('M', date.getMonth());
                 replacement = replacement.replace('M', 'N');
 
             } else if (replacement.includes('DDDD')) {
 
-                longday = long_days[date.getDay()];
-                result = result.replace('DDDD', longday);
+                var longDay = long_days[date.getDay()];
+                result = result.replace('DDDD', longDay);
                 replacement = replacement.replace('DDDD', 'NNNN');
 
             } else if (replacement.includes('DDD')) {
 
-                shortday = short_days[date.getDay()];
-                result = result.replace('DDD', shortday);
+                var shortDay = short_days[date.getDay()];
+                result = result.replace('DDD', shortDay);
                 replacement = replacement.replace('DDD', 'NNN');
 
             } else if (replacement.includes('DD')) {
@@ -376,7 +375,9 @@
                     result = result.replace('DD', date.getDate());
                     replacement = replacement.replace('DD', 'NN');
                 }
+
             } else if (replacement.includes('D')) {
+
                 result = result.replace('D', date.getDate());
                 replacement = replacement.replace('D', 'N');
 
@@ -384,51 +385,37 @@
 
                 replacement = replacement.replace('T', ' ');
                 result = result.replace('T', ' ');
+
             } else if (replacement.includes('HH')) {
 
-                result = result.replace('HH', date.getHours());
-                replacement = replacement.replace('HH', '');
+                if (date.getHours() < 10) {
+                    replacement = replacement.replace('HH', '0' + date.getHours());
+                    result = result.replace('HH', '0' + date.getHours());
+                } else {
+                    replacement = replacement.replace('HH', '');
+                    result = result.replace('HH', date.getHours());
+                }
 
             } else if (replacement.includes('H')) {
 
-                if (date.getHours() < 10) {
-                    replacement = replacement.replace('H', '0' + date.getHours());
-                    result = result.replace('H', '0' + date.getHours());
-                } else {
-                    replacement = replacement.replace('H', '');
-                    result = result.replace('H', date.getHours());
-                }
+                result = result.replace('H', date.getHours());
+                replacement = replacement.replace('H', '');
 
             } else if (replacement.includes('hh')) {
 
-                if (date.getHours() > 12)
-                    if (date.getHours() % 12 < 10)
-                        twelveformat = '0' + date.getHours() % 12 + 'pm';
-                    else
-                        twelveformat = date.getHours() % 12 + 'pm';
-                else {
-
-                    if (date.getHours() < 10)
-                        twelveformat = '0' + date.getHours() + 'am';
-                    else
-                        twelveformat = date.getHours() + 'am';
-
-                }
-
+                if(date.getHours() !== 12)
+                    twelveformat = mod < 10 ? "0" + mod : ""+mod;
+                else
+                    twelveformat = date.getHours().toString();
+                twelveformat += meridian;
                 result = result.replace('hh', twelveformat);
                 replacement = replacement.replace('hh', '');
 
             } else if (replacement.includes('h')) {
 
-                if (date.getHours() > 12)
-                    twelveformat = date.getHours() % 12 + 'pm';
-                else {
-                    twelveformat = date.getHours() + 'am';
-
-                }
-
-                result = result.replace('hh', twelveformat);
-                replacement = replacement.replace('hh', '');
+                twelveformat = date.getHours() > 12 ? mod + meridian : date.getHours() + meridian;
+                result = result.replace('h', twelveformat);
+                replacement = replacement.replace('h', '');
 
             } else if (replacement.includes('mm')) {
 
@@ -436,8 +423,9 @@
                     min = '0' + date.getMinutes();
                     result = result.replace('mm', min);
                     replacement = replacement.replace('mm', '')
-                } else
+                } else {
                     result = result.replace('mm', date.getMinutes());
+                }
                 replacement = replacement.replace('mm', '');
 
             } else if (replacement.includes('m')) {
@@ -446,6 +434,7 @@
                 replacement = replacement.replace('m', '');
 
             } else if (replacement.includes('sss')) {
+
                 result = result.replace('sss', date.getMilliseconds());
                 replacement = replacement.replace('sss', '');
 
@@ -460,19 +449,26 @@
                     result = result.replace('ss', date.getSeconds());
                 }
 
-
             } else if (replacement.includes('s')) {
+
                 result = result.replace('s', date.getSeconds());
                 replacement = replacement.replace('s', '');
+
             } else if (replacement.includes('X')) {
+
                 result = result.replace('X', '1410715640.579');
                 replacement = replacement.replace('X', '');
+
             } else if (replacement.includes('x')) {
+
                 result = result.replace('x', '1410715640579');
                 replacement = replacement.replace('x', '');
+
             } else if (replacement.includes('Z')) {
+
                 result = result.replace('Z', "+/-");
                 replacement = replacement.replace('Z', '');
+
             }
 
         }
@@ -480,14 +476,10 @@
     }
 
     w.DateFormatter = {
-
         format: format,
-
         parse: parse,
-
         config: config
-
     }
-    console.log(parse(["21/8/28", "21/8/28"], ['YYYY/M/DD', 'YYYY/M/DD'])[0].getFullYear().toString())
+
 })(global);
 
