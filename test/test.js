@@ -187,9 +187,6 @@ describe('Date', function () {
                 dp = dateParams[i].hour || 0;
                 check = dp > 12 ? pad((dp % 12),2).toString()+"pm" : pad(dp,2).toString()+"am";
 
-                // TODO: con "hh"
-                //  con le 13 rende 1pm - errato deve restituire 01pm
-                //  con le 12 rende 0am - errato deve restituire 12am
                 assert.equal(lib.format(d, format), check, "errore con data "+d.toString());
             }
         });
