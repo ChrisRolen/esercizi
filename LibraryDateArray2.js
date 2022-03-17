@@ -427,8 +427,8 @@
 
                 }
 
-                result = result.replace('hh', twelveformat);
-                replacement = replacement.replace('hh', '');
+                result = result.replace('h', twelveformat);
+                replacement = replacement.replace('h', '');
 
             } else if (replacement.includes('mm')) {
 
@@ -488,6 +488,5 @@
         config: config
 
     }
-    console.log(parse(["21/8/28", "21/8/28"], ['YYYY/M/DD', 'YYYY/M/DD'])[0].getFullYear().toString())
 })(global);
 

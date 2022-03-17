@@ -4,21 +4,46 @@ require("../LibraryDateArray2");
 var lib = DateFormatter;
 const {qunit} = require("mocha/lib/interfaces");
 const assert = require('chai').assert;
-var dates= [
+
+var outputs = {
+    full_year: ['2021', '1000', '1909', '2021', '2021', '2021', '999'],
+    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    numeric_months: ['11', '03', '01', '05'],
+    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    hours: ['00', '23'],
+    minutes: ['00', '12', '59'],
+    seconds: ['00', '59', '01'],
+    m_seconds: ['0', '60']
+
+}
+var dates = [
     new Date(2021, 11, 4,),
     new Date(999, 15, 4),
     new Date(9, 11, 4),
     new Date(2021, 1, 4),
     new Date(2021, 11, 9, 23, 59, 59),
     new Date(2021, 11, 4, 23, 12, 1, 60),
+    new Date(999, 5, 12)
+]
+
+var strings = [
+    "21/8/28",
+    "21/8/28 13:44",
+    "21/8/28 01:44",
+    "21/May/28",
+    "21/Feb/28",
+    "21/11/28",
+    "21/01/28",
+    "21/8/28 1am:44:12:394"
 ]
 
 describe('Date', function () {
     describe('#format', function () {
         it('returns a String given a Date of the desired Format', function () {
 
-            assert.isString(lib.format(dates[0], 'Era il YY, di MM'))
-
+            dates.forEach(d =>
+                assert.isString(lib.format(d, 'Era il YY, di MM'))
+            )
         });
 
         it('returns undefined if nothing is valid', function () {
@@ -26,86 +51,201 @@ describe('Date', function () {
             assert.throws(() => lib.format('no', 'no'), 'Variable date or format are not of the required format.');
         });
 
-        it('returns a full year (4 chars) if YYYY is requested', function () {
+        it('returns a full year (maximum 4 chars) if YYYY is requested', function () {
 
-            assert.equal(lib.format(dates[1], 'YYYY'), '1000')
+            var i = 0
+            dates.forEach(d => {
+                assert.equal(lib.format(d, 'YYYY'), outputs.full_year[i]);
+                i++;
+            })
         });
 
         it('returns a short year (2 chars) if YY is requested', function () {
 
-            assert.equal(lib.format(dates[2], 'YY'), '09')
-        })
+            var i = 0
+            dates.forEach(d => {
+                assert.equal(lib.format(d, 'YY'), outputs.full_year[i].slice(-2));
+                i++;
+            })
+        });
 
         it('returns a full month written in letters if MMMM is requested', function () {
-            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            var m = lib.format(dates[0], 'MMMM');
-            assert.oneOf(m, months);
+
+            dates.forEach(d => {
+                var m = lib.format(d, 'MMMM');
+                assert.oneOf(m, outputs.months);
+            })
+
         });
 
         it('returns a short month written in letters if MMM is requested', function () {
-            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-            var mm = lib.format(dates[0], 'MMM')
-            assert.oneOf(mm, months);
+
+            var halfmonth = [];
+            outputs.months.forEach(d => halfmonth.push(d.toString().slice(0, 3)));
+            dates.forEach(d => {
+                var m = lib.format(d, 'MMM');
+                assert.oneOf(m, halfmonth);
+            })
         });
 
         it('returns a month in two digits if MM is requested', function () {
 
-            assert.equal(lib.format(dates[3], 'MM'), '01')
+            dates.forEach(d => {
+                var m = lib.format(d, 'MM');
+                assert.oneOf(m, outputs.numeric_months);
+            })
+
         });
         it('returns a month if M is requested', function () {
 
-            assert.isBelow(parseInt(lib.format(dates[0], 'M')), 13)
+            dates.forEach(d => {
+                var m = lib.format(d, 'M');
+                if (parseInt(m) < 10)
+                    m = '0' + m;
+                assert.oneOf(m, outputs.numeric_months);
+            })
         });
 
         it('returns a full day of the week in letters if DDDD is requested', function () {
-            var long_days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-            var dddd = lib.format(dates[0], 'DDDD')
-            assert.oneOf(dddd, long_days)
+
+
+            dates.forEach(d => {
+                var dddd = lib.format(d, 'DDDD');
+                assert.oneOf(dddd, outputs.days);
+            })
+
         });
 
         it('returns a short day of the week in letters if DDD is requested', function () {
-            var short_days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-            var ddd = lib.format(dates[0], 'DDD')
-            assert.oneOf(ddd, short_days)
+
+            var halfdays = [];
+            outputs.days.forEach(d => halfdays.push(d.toString().slice(0, 3)));
+            dates.forEach(d => {
+                var dddd = lib.format(d, 'DDD');
+                assert.oneOf(dddd, halfdays);
+            })
+
         });
         it('returns a two digit day if DD is requested', function () {
-            assert.equal(lib.format(dates[0], 'DD'), '04')
+
+            dates.forEach(d => {
+                assert.equal(lib.format(d, 'DD').length, 2);
+            })
+
         });
         it('returns a one digit day if D is requested', function () {
-            assert.isBelow(parseInt(lib.format(dates[4], 'D')), 31)
+
+            dates.forEach(d => {
+                assert.isBelow(parseInt(lib.format(d, 'D')), 31);
+            })
+
         });
         it('returns a blank space if T is requested ', function () {
-            assert.equal(lib.format(dates[0], 'T'), " ")
+
+            dates.forEach(d =>{
+                assert.equal(lib.format(d, 'T'), " ");
+            })
+
         });
         it('returns the hours in 0-24 format if HH is requested', function () {
-            assert.isBelow(parseInt(lib.format(dates[5], 'HH')), 25)
+
+            dates.forEach(d => {
+                assert.isBelow(parseInt(lib.format(d, 'HH')), 25);
+            })
+
         });
         it('returns the hours in two digits and 0-24 format if H is requested', function () {
-            assert.isBelow(parseInt(lib.format(dates[5], 'H')), 25)
-            assert.equal(lib.format(dates[5], 'H'), '23')
+
+            dates.forEach(d => {
+                assert.isBelow(parseInt(lib.format(d, 'H')), 25);
+                assert.oneOf(lib.format(d, 'H'), outputs.hours);
+            })
+
         });
         it('returns the hours in two digits and 0-12 am/pm if hh is requested', function () {
-            assert.isBelow(parseInt(lib.format(dates[5], 'hh')), 13)
-            assert.equal(lib.format(dates[5], 'hh'), '11pm')
+
+            var form = [];
+            outputs.hours.forEach(hh => {
+                if (hh > 12){
+                    form.push(hh%12 + 'pm')
+                }else{
+                    form.push('0' + hh%12 + 'am')
+                }
+
+            })
+
+            dates.forEach(d => {
+                assert.isBelow(parseInt(lib.format(d, 'hh')), 13);
+                assert.oneOf(lib.format(d, 'hh'), form);
+            })
+            
         });
-        it('returns the hours in 0-12 a/pm format if h is requested', function () {
-            assert.isBelow(parseInt(lib.format(dates[5], 'hh')), 13)
-            assert.equal(lib.format(dates[5], 'hh'), '11pm')
+
+        it('returns the hours in 0-12 am/pm format if h is requested', function () {
+
+            var form = [];
+            outputs.hours.forEach(hh => {
+                if (hh > 12){
+                    form.push(hh%12 + 'pm')
+                }else{
+                    form.push(hh%12 + 'am')
+                }
+
+            })
+
+            dates.forEach(d => {
+                assert.oneOf(lib.format(d, 'h'), form);
+            })
+
         });
         it('return two digits minutes if mm is requested', function () {
-            assert.equal(lib.format(dates[5], 'mm'), '12')
+            dates.forEach(d => {
+                assert.oneOf(lib.format(d, 'mm'), outputs.minutes);
+
+            })
+
         });
         it('returns the minutes if m is requested', function () {
-            assert.equal(lib.format(dates[5], 'm'), '12')
+
+            var form = [];
+            outputs.minutes.forEach(mm => {
+                if (parseInt(mm) < 10){
+                    form.push(mm.slice(-1))
+                }else{
+                    form.push(mm)
+                }});
+
+            dates.forEach(d => {
+                assert.oneOf(lib.format(d, 'm'), form);
+            })
+
         });
         it('returns two digits seconds if ss is requested', function () {
-            assert.equal(lib.format(dates[5], 'ss'), '01')
+
+            dates.forEach(d => {
+                assert.oneOf(lib.format(d, 'ss'), outputs.seconds)
+            })
+
         });
         it('returns the seconds if s is requested', function () {
-            assert.equal(lib.format(dates[5], 's'), '1')
+
+            var form = [];
+            outputs.seconds.forEach(mm => {
+                if (parseInt(mm) < 10){
+                    form.push(mm.slice(-1))
+                }else{
+                    form.push(mm)
+                }});
+
+            dates.forEach(d => {
+                assert.oneOf(lib.format(d, 's'), form);
+            })
+
         });
         it('returns the milliseconds if sss is requested', function () {
-            assert.equal(lib.format(dates[5], 'sss'), '60')
+            dates.forEach(d =>{
+                assert.oneOf(lib.format(d, 'sss'), outputs.m_seconds);
+            })
         });
 
     });
