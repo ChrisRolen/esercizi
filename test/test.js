@@ -11,11 +11,11 @@ var outputs = {
     numeric_months: ['11', '03', '01', '05'],
     days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     hours: ['00', '23'],
-    minutes: ['00', '12', '59'],
-    seconds: ['00', '59', '01'],
+    minutes: ['00', '12', '59', '44', '22', '1'],
+    seconds: ['00', '59', '01', '0'],
     m_seconds: ['0', '60']
-
 }
+
 var dates = [
     new Date(2021, 11, 4,),
     new Date(999, 15, 4),
@@ -26,16 +26,13 @@ var dates = [
     new Date(999, 5, 12)
 ]
 
-var strings = [
-    "21/8/28",
-    "21/8/28 13:44",
-    "21/8/28 01:44",
-    "21/May/28",
-    "21/Feb/28",
-    "21/11/28",
-    "21/01/28",
-    "21/8/28 1am:44:12:394"
-]
+var form_puts = {
+    full_year: ['21', '11', '1'],
+    months: [5, 4, 2],
+    days: [28, 22, 6],
+    hours: [1, 23, 0, 13]
+}
+
 
 describe('Date', function () {
     describe('#format', function () {
@@ -255,28 +252,54 @@ describe('Date', function () {
         });
 
         it('sets an Array of Dates with a four digit year when YYYY is given', function () {
-            assert.equal(lib.parse(["21/8/28", "21/8/28"], ['YYYY/M/DD', 'YYYY/M/DD'])[0].getFullYear().toString(), '21')
+            var dates_yyy = ["21/8/28", "11/4/22", "1/2/6"];
+            var form = ['YYYY/M/DD', 'YYYY/M/DD', 'YYYY/M/DD'];
+            lib.parse(dates_yyy, form).forEach( d => {
+               assert.oneOf(d.getFullYear().toString(), form_puts.full_year)
+            });
         });
 
         it('sets an Array of Dates with an year with the "20" prefix when YY is given', function () {
-            assert.equal(lib.parse(["21/8/28", "21/8/28"], ['YY/M/DD', 'YY/M/DD'])[0].getFullYear().toString(), '2021')
-            assert.isBelow(lib.parse(["21/8/28", "21/8/28"], ['YY/M/DD', "YY/M/DD"])[0].getFullYear(), 2100)
+            var dates_yy = ["21/8/28", "11/4/22", "1/2/6"];
+            var form = ['YY/M/DD', 'YY/M/DD', 'YY/M/DD'];
+            var output = [];
+            form_puts.full_year.forEach(y => output.push('20'+ y));
+            lib.parse(dates_yy, form).forEach( d => {
+                assert.oneOf(d.getFullYear().toString(), output);
+                assert.isBelow(d.getFullYear(), 2100);
+            })
         });
 
         it('sets an Array of Dates with a month from their long names when MMMM is given', function () {
-            assert.isBelow(lib.parse(["21/May/28", "21/May/28"], ['YY/MMMM/DD', 'YY/MMMM/DD'])[0].getMonth(), 13)
+            var dates_mmmm = ["21/May/28", "11/April/22", "1/February/6" ];
+            var form = ['YY/MMMM/DD', 'YY/MMMM/DD', 'YY/MMMM/DD'];
+            lib.parse(dates_mmmm, form).forEach( d => {
+                assert.oneOf(d.getMonth(), form_puts.months);
+            })
         });
 
         it('sets an Array of Dates with a month from their short names when MMM is given', function () {
-            assert.isBelow(lib.parse(["21/Feb/28", "21/Feb/28"], ['YY/MMM/DD', "YY/MMM/DD"])[0].getMonth(), 13)
+            var dates_mmmm = ["21/May/28", "11/Apr/22", "1/Feb/6" ];
+            var form = ['YY/MMM/DD', 'YY/MMM/DD', 'YY/MMM/DD'];
+            lib.parse(dates_mmmm, form).forEach( d => {
+                assert.oneOf(d.getMonth(), form_puts.months);
+            })
         });
 
         it('sets an Array of Dates with a month from two digits when MM is given', function () {
-            assert.isBelow(lib.parse(["21/01/28"], ['YY/MM/DD'])[0].getMonth(), 13)
+            var dates_mmmm = ["21/05/28", "11/04/22", "1/02/6" ];
+            var form = ['YY/MM/DD', 'YY/MMMM/DD', 'YY/MM/DD'];
+            lib.parse(dates_mmmm, form).forEach( d => {
+                assert.oneOf(d.getMonth(), form_puts.months);
+            })
         });
 
         it('sets an Array of Dates with a month when M is given', function () {
-            assert.isBelow(lib.parse(["21/11/28"], ['YY/M/DD'])[0].getMonth(), 13)
+            var dates_mmmm = ["21/5/28", "11/4/22", "1/2/6" ];
+            var form = ['YY/M/DD', 'YY/M/DD', 'YY/M/DD'];
+            lib.parse(dates_mmmm, form).forEach( d => {
+                assert.oneOf(d.getMonth(), form_puts.months);
+            })
         });
 
         it('skips the command if DDDD is passed', function () {
@@ -288,43 +311,83 @@ describe('Date', function () {
         });
 
         it('sets an Array of Dates with a day from two digits when DD is given', function () {
-            assert.isBelow(lib.parse(["1/01/08"], ['YY/MM/DD'])[0].getDate(), 32)
+            var dates_mmmm = ["21/5/28", "11/4/22", "1/2/06" ];
+            var form = ['YY/M/DD', 'YY/M/DD', 'YY/M/DD'];
+            lib.parse(dates_mmmm, form).forEach( d => {
+                assert.oneOf(d.getDate(), form_puts.days);
+            })
         });
 
         it('sets an Array of Dates with a day when D is given', function () {
-            assert.isBelow(lib.parse(["21/01/28"], ['YY/MM/D'])[0].getDate(), 32)
+            var dates_mmmm = ["21/5/28", "11/4/22", "1/2/6" ];
+            var form = ['YY/M/D', 'YY/M/D', 'YY/M/D'];
+            lib.parse(dates_mmmm, form).forEach( d => {
+                assert.oneOf(d.getDate(), form_puts.days);
+            })
         });
 
         it('sets an Array of Dates with the hours from two digits when HH is given', function () {
-            assert.isBelow(lib.parse(["21/8/28 01:44"], ['YY/M/DDTHH:mm'])[0].getHours(), 24)
+            var dates_hh = ["21/8/28 01:44", "21/8/28 23:44", "21/8/28 00:44"]
+            var form = ['YY/M/DDTHH:mm', 'YY/M/DDTHH:mm', 'YY/M/DDTHH:mm']
+            lib.parse(dates_hh, form).forEach( d => {
+                assert.oneOf(d.getHours(), form_puts.hours);
+            })
         });
 
         it('sets an Array of Dates with the hours when H is given', function () {
-            assert.isBelow(lib.parse(["21/8/28 13:44"], ['YY/M/DDTH:mm'])[0].getHours(), 24)
+            var dates_hh = ["21/8/28 1:44", "21/8/28 23:44", "21/8/28 0:44"]
+            var form = ['YY/M/DDTH:mm', 'YY/M/DDTHH:mm', 'YY/M/DDTH:mm']
+            lib.parse(dates_hh, form).forEach( d => {
+                assert.oneOf(d.getHours(), form_puts.hours);
+            })
         });
 
         it('sets an Array of Dates with the hours from a 12 hours format in two digits when hh is given', function () {
-            assert.isBelow(lib.parse(["21/8/28 12pm:44"], ['YY/M/DDThh:mm'])[0].getHours(), 24)
+            var dates_hh = ["21/8/28 01pm:44", "21/8/28 11pm:44", "21/8/28 12am:44"]
+            var form = ['YY/M/DDThh:mm', 'YY/M/DDThh:mm', 'YY/M/DDThh:mm']
+            lib.parse(dates_hh, form).forEach( d => {
+                assert.oneOf(d.getHours(), form_puts.hours);
+            })
         });
 
         it('sets an Array of Dates with the hours from a 12 hours format when h is given', function () {
-            assert.isBelow(lib.parse(["21/8/28 1am:44"], ['YY/M/DDThh:mm'])[0].getHours(), 24)
+            var dates_hh = ["21/8/28 1pm:44", "21/8/28 11pm:44", "21/8/28 12am:44"]
+            var form = ['YY/M/DDThh:mm', 'YY/M/DDThh:mm', 'YY/M/DDThh:mm']
+            lib.parse(dates_hh, form).forEach( d => {
+                assert.oneOf(d.getHours(), form_puts.hours);
+            })
         });
 
         it('sets an Array of Dates with the minutes from two digits when mm is given', function () {
-            assert.isBelow(lib.parse(["21/8/28 1am:04"], ['YY/M/DDThh:mm'])[0].getMinutes(), 60)
+            var dates_hh = ["21/8/28 01pm:01", "21/8/28 11pm:22", "21/8/28 12am:12"]
+            var form = ['YY/M/DDThh:mm', 'YY/M/DDThh:mm', 'YY/M/DDThh:mm']
+            lib.parse(dates_hh, form).forEach( d => {
+                assert.oneOf(d.getMinutes().toString(), outputs.minutes);
+            })
         });
 
         it('sets an Array of Dates with the minutes when m is given', function () {
-            assert.isBelow(lib.parse(["21/8/28 1am:44"], ['YY/M/DDThh:m'])[0].getMinutes(), 60)
+            var dates_hh = ["21/8/28 01pm:1", "21/8/28 11pm:22", "21/8/28 12am:12"]
+            var form = ['YY/M/DDThh:m', 'YY/M/DDThh:m', 'YY/M/DDThh:m']
+            lib.parse(dates_hh, form).forEach( d => {
+                assert.oneOf(d.getMinutes().toString(), outputs.minutes);
+            })
         });
 
         it('sets an Array of Dates with the seconds from two digits when ss is given', function () {
-            assert.isBelow(lib.parse(["21/8/28 1am:44:02"], ['YY/M/DDThh:m:ss'])[0].getMinutes(), 60)
+            var dates_hh = ["21/8/28 01pm:1:00", "21/8/28 11pm:22:59", "21/8/28 12am:12:01"]
+            var form = ['YY/M/DDThh:m:ss', 'YY/M/DDThh:m:ss', 'YY/M/DDThh:m:ss']
+            lib.parse(dates_hh, form).forEach( d => {
+                assert.oneOf(d.getSeconds().toString(), outputs.seconds);
+            })
         });
 
         it('sets an Array of Dates with the seconds when s is given', function () {
-            assert.isBelow(lib.parse(["21/8/28 1am:44:12"], ['YY/M/DDThh:m:s'])[0].getMinutes(), 60)
+            var dates_hh = ["21/8/28 01pm:1:0", "21/8/28 11pm:22:59", "21/8/28 12am:12:1"]
+            var form = ['YY/M/DDThh:m:s', 'YY/M/DDThh:m:s', 'YY/M/DDThh:m:s']
+            lib.parse(dates_hh, form).forEach( d => {
+                assert.oneOf(d.getSeconds().toString(), outputs.seconds);
+            })
         });
 
         it('sets an Array of Dates with the milliseconds when sss is given', function () {
